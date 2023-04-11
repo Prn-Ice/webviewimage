@@ -17,12 +17,12 @@ enum EmbedPosition {
 class HtmlUtils {
   /// Checks if the source looks like HTML
   static bool isFullHtmlPage(String src) {
-    final _src = src.trim().toLowerCase();
-    return _src.startsWith(RegExp('<!DOCTYPE html>', caseSensitive: false)) &&
+    final src0 = src.trim().toLowerCase();
+    return src0.startsWith(RegExp('<!DOCTYPE html>', caseSensitive: false)) &&
         // I didn't forget the closing bracket here.
         // Html opening tag may also have some random attributes.
-        _src.contains(RegExp('<html', caseSensitive: false)) &&
-        _src.contains(RegExp('</html>', caseSensitive: false));
+        src0.contains(RegExp('<html', caseSensitive: false)) &&
+        src0.contains(RegExp('</html>', caseSensitive: false));
   }
 
   /// Wraps markup in HTML tags
@@ -54,14 +54,14 @@ class HtmlUtils {
     bool encodeHtml = false,
     String? windowDisambiguator,
   }) {
-    var _src = src;
+    var src0 = src;
 
-    if (!isFullHtmlPage(_src)) {
-      _src = wrapHtml(_src, windowDisambiguator);
+    if (!isFullHtmlPage(src0)) {
+      src0 = wrapHtml(src0, windowDisambiguator);
     }
 
     if (forWeb) {
-      _src = embedWebIframeJsConnector(_src, windowDisambiguator!);
+      src0 = embedWebIframeJsConnector(src0, windowDisambiguator!);
     }
 
     if (jsContent.isNotEmpty) {
@@ -77,14 +77,14 @@ class HtmlUtils {
           }
         }
       }
-      _src = embedJsInHtmlSource(_src, jsContentStrings);
+      src0 = embedJsInHtmlSource(src0, jsContentStrings);
     }
 
     if (encodeHtml) {
-      _src = encodeHtmlToURI(_src);
+      src0 = encodeHtmlToURI(src0);
     }
 
-    return _src;
+    return src0;
   }
 
   /// Encodes HTML to URI

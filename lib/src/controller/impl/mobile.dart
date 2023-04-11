@@ -3,10 +3,7 @@ import 'dart:async' show Future;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:webview_flutter/webview_flutter.dart' as wf;
-import 'package:webviewimage/src/utils/html_utils.dart';
-import 'package:webviewimage/src/utils/source_type.dart';
 import 'package:webviewimage/src/utils/utils.dart';
-
 import 'package:webviewimage/src/controller/interface.dart' as i;
 
 /// Mobile implementation
@@ -80,10 +77,10 @@ class WebViewXController extends ChangeNotifier
     bool fromAssets = false,
   }) async {
     if (fromAssets) {
-      final _content = await rootBundle.loadString(content);
+      final content0 = await rootBundle.loadString(content);
 
       value = WebViewContent(
-        source: _content,
+        source: content0,
         sourceType: sourceType,
         headers: headers,
       );
@@ -121,7 +118,7 @@ class WebViewXController extends ChangeNotifier
   ) async {
     // This basically will transform a "raw" call (evaluateJavascript)
     // into a little bit more "typed" call, that is - calling a method.
-    final result = await connector.evaluateJavascript(
+    final result = await connector.runJavaScriptReturningResult(
       HtmlUtils.buildJsFunction(name, params),
     );
 
@@ -129,7 +126,7 @@ class WebViewXController extends ChangeNotifier
     //
     // In the mobile version responses from Js to Dart come wrapped in single quotes (')
     // The web works fine because it is already into it's native environment
-    return HtmlUtils.unQuoteJsResponseIfNeeded(result);
+    return HtmlUtils.unQuoteJsResponseIfNeeded(result.toString());
   }
 
   /// This function allows you to evaluate 'raw' javascript (e.g: 2+2)
@@ -144,7 +141,7 @@ class WebViewXController extends ChangeNotifier
     String rawJavascript, {
     bool inGlobalContext = false, // NO-OP HERE
   }) {
-    return connector.evaluateJavascript(rawJavascript);
+    return connector.runJavaScriptReturningResult(rawJavascript);
   }
 
   /// Returns the current content
@@ -205,14 +202,18 @@ class WebViewXController extends ChangeNotifier
 
   /// Get scroll position on X axis
   @override
-  Future<int> getScrollX() {
-    return connector.getScrollX();
+  Future<int> getScrollX() async {
+    final value = await connector.getScrollPosition();
+
+    return value.dx.toInt();
   }
 
   /// Get scroll position on Y axis
   @override
-  Future<int> getScrollY() {
-    return connector.getScrollY();
+  Future<int> getScrollY() async {
+    final value = await connector.getScrollPosition();
+
+    return value.dy.toInt();
   }
 
   /// Scrolls by `x` on X axis and by `y` on Y axis

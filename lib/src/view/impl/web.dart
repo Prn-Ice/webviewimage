@@ -1,9 +1,10 @@
+// ignore_for_file: avoid_web_libraries_in_flutter
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:html' as html;
 import 'dart:js' as js;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:pointer_interceptor/pointer_interceptor.dart';
@@ -134,10 +135,10 @@ class WebViewX extends StatefulWidget implements view_interface.WebViewX {
   }) : super(key: key);
 
   @override
-  _WebViewXState createState() => _WebViewXState();
+  WebViewXState createState() => WebViewXState();
 }
 
-class _WebViewXState extends State<WebViewX> {
+class WebViewXState extends State<WebViewX> {
   late html.IFrameElement iframe;
   late String iframeViewType;
   late StreamSubscription iframeOnLoadSubscription;
